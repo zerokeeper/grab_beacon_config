@@ -125,19 +125,19 @@ local function grab_beacon(response)
 	local return_string = ""
 	if (response.status == 200) then
 		if (http.response_contains(response, test_string, true)) then
-			local offset = string.find(response.rawbody, test_string) + 3
+			local offset = string.find(response.body, test_string) + 3
 			local endian = "<I"
-			local key = string.unpack(endian,response.rawbody,offset)
-			local size = string.unpack(endian,response.rawbody,offset+4) ~ key
-			local c = string.unpack(endian,response.rawbody,offset+8) ~ key
+			local key = string.unpack(endian,response.body,offset)
+			local size = string.unpack(endian,response.body,offset+4) ~ key
+			local c = string.unpack(endian,response.body,offset+8) ~ key
 			local mz = c & 0xffff
 			local x = math.floor(2 + (offset / 4))
-			local y = math.floor((string.len(response.rawbody)/4)-4)
+			local y = math.floor((string.len(response.body)/4)-4)
 			local repacked  = ""
 			local repacked2 = ""
 			for var=x,y do
-				a = string.unpack(endian,response.rawbody,var*4)
-				b = string.unpack(endian,response.rawbody,var*4+4)
+				a = string.unpack(endian,response.body,var*4)
+				b = string.unpack(endian,response.body,var*4+4)
 				z = tonumber(a) ~ tonumber(b) 
 				repacked = repacked .. string.pack(endian,z ~ 0x2e2e2e2e) --version 4
 				repacked2 = repacked2 .. string.pack(endian,z ~ 0x69696969) --version 3
